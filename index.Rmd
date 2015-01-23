@@ -1,0 +1,80 @@
+---
+title       : Predict Iris Species
+subtitle    : DataApp illustrating a prediction algorithm built by Machine Learning
+author      : Julien19
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## What is this App?
+
+This DataApp predicts the species of an iris, from several parameters entered by the user: Petal Lenght, Petal Width, Sepal Length, Sepal Width.  
+
+The prediction algorithm has been built by machine learning on the Fisher/Anderson's iris data.  
+
+The user has to enter the parameter of its iris.  
+And will get in output the predicted species of the iris.  
+
+Moreover, the user can also see on plots where its iris is positioned regarding other iris of which we know the species.  
+
+---
+
+## How the prediction algorithm has been built?
+
+The prediction algorithm has been built by machine learning on the Fisher/Anderson's iris data.
+
+Here is the R code used to built the prediction algorithm. Note that We have chosen the "Random Forest" method.
+
+```{r, echo=FALSE}
+##libraries & seed
+library(caret);
+library(e1071);
+library(lattice);
+library(ggplot2);
+library(randomForest);
+library(grid);
+set.seed(1234);
+```
+```{r, echo=TRUE}
+##datasets
+data(iris);
+datainit=iris;
+output="Species";
+
+inTrain <- createDataPartition(datainit[,output], p = 0.7, list = FALSE)
+training <- datainit[ inTrain,]
+testing <- datainit[-inTrain,]
+
+##model
+form=Species~.;
+method="rf";
+
+modelFit<-train(form=form,data=training,method=method)
+```
+
+---
+
+## Prediction model accuracy
+
+The out of sample error have been estimated as a 95% accuracy.
+
+Here is the confusion matrix for this out of sample error estimation.
+
+```{r, echo=TRUE}
+predictions<-predict(modelFit,newdata=testing)
+confusionMatrix(predictions,testing[,output])
+```
+
+---
+
+## DataApp user interface
+
+Here is a screenshot of the DataApp user interface:  
+
+![width](UI_screenshot.png)
+---
